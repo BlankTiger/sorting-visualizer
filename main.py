@@ -9,7 +9,7 @@ import tkinter as tk
 from tkinter import ttk
 import numpy as np
 import colors as col
-from sorting_algorithms import bubble_sort
+from sorting_algorithms import bubble_sort, unoptimized_bubble_sort
 
 ############################
 # main app window settings #
@@ -44,6 +44,7 @@ main_frame.columnconfigure(3, weight=5)
 # functions used to manipulate the data in the app window #
 ###########################################################
 
+
 def generate_data():
     """Used to generate and draw a random list of integers to sort onto
     canvas"""
@@ -51,7 +52,7 @@ def generate_data():
     global data
     data = []
     for i in range(50):
-        random_value = np.random.randint(0, 150)
+        random_value = np.random.randint(0, 51)
         data.append(random_value)
 
     draw_data(data, [col.DARK_BLUE for x in range(len(data))])
@@ -64,6 +65,11 @@ def draw_data(data, colors):
         data (list): list of integers to be displayed
         colors (list): list of colors used for displaying data
     """
+
+    # checks if it should draw to the canvas, if running is False it means that
+    # app should be stopped
+    if running is False:
+        exit()
     data_canvas.delete("all")
     x_width = data_canvas.winfo_width() / (len(data) + 1)
     canvas_height = data_canvas.winfo_height()
@@ -82,7 +88,7 @@ def draw_data(data, colors):
         y1 = canvas_height
         data_canvas.create_rectangle(x0, y0, x1, y1, fill=colors[i])
 
-    app_window.update_idletasks()
+    data_canvas.update()
 
 
 def get_speed():
@@ -95,6 +101,8 @@ def get_speed():
         return 0.5
     elif menu_speed.get() == "medium":
         return 0.2
+    elif menu_speed.get() == "realtime":
+        return 0
     else:
         return 0.01
 
@@ -107,14 +115,17 @@ def start_sorting():
     if menu_algo.get() == "Bubble sort":
         bubble_sort(data, draw_data, time_delay)
 
+    elif menu_algo.get() == "Unoptimized Bubble sort":
+        unoptimized_bubble_sort(data, draw_data, time_delay)
+
 
 #######################################
 # objects displayed in the app window #
 #######################################
 
 # data used to fill the objects created below
-algorithm_list = ["Bubble sort", "Quicksort"]
-sorting_speeds = ["slow", "medium", "fast"]
+algorithm_list = ["Bubble sort", "Unoptimized Bubble sort", "Quicksort"]
+sorting_speeds = ["slow", "medium", "fast", "realtime"]
 
 # everything related to choosing choosing
 algorithm_name = tk.StringVar()
@@ -150,7 +161,10 @@ generate_data_button.grid(row=2, column=1, padx=5, pady=5)
 
 # button used to start the sorting process
 sort_button = tk.Button(
-    main_frame, text="Sort", command=start_sorting, bg=col.LIGHT_GRAY
+    main_frame,
+    text="Sort",
+    command=start_sorting,
+    bg=col.LIGHT_GRAY,
 )
 sort_button.grid(row=2, column=2, padx=5, pady=5)
 
@@ -160,7 +174,20 @@ data_canvas = tk.Canvas(main_frame, bg=col.DARK_GRAY)
 data_canvas.grid(
     row=3, column=0, columnspan=4, sticky=(tk.N, tk.S, tk.E, tk.W)
 )
-data_canvas.update()
+
+
+# snippet used to control closing of the app
+running = True
+
+
+def destroy_window():
+    global running
+    running = False
+    exit()
+
+
+# defining how the app should behave when user clicks the "X" button
+app_window.protocol("WM_DELETE_WINDOW", destroy_window)
 
 # start of the main loop of the application
 app_window.mainloop()
