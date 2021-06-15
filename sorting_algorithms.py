@@ -12,6 +12,10 @@ def bubble_sort(data, draw_data, time_delay):
     """Bubble sort with a modification that allows drawing of the sorted data
     in realtime with a specified delay
 
+    Color information:
+    - rectangles that are swapped are shown as green,
+    - rectangles that are just checked are shown as yellow.
+
     Args:
         data (list): list of random data to sort
         draw_data (function): function that draws the specified data
@@ -52,6 +56,11 @@ def unoptimized_bubble_sort(data, draw_data, time_delay):
     """Bubble sort without optimizations and with a modification that allows
     drawing of the sorted data in realtime with a specified delay
 
+    Color information:
+    - rectangles that are swapped are shown as green,
+    - rectangles that are just checked are shown as yellow.
+
+
     Args:
         data (list): list of random data to sort
         draw_data (function): function that draws the specified data
@@ -88,6 +97,24 @@ def unoptimized_bubble_sort(data, draw_data, time_delay):
 
 
 def partition(data, start, end, draw_data, time_delay):
+    """Function that serves the purpose of partitioning the provided list of
+    random numbers to sort
+
+    Color information:
+    - rectangles that are swapped are light green.
+
+    Args:
+        data (list): list of random data to sort
+        start (int): index of the first item we want to get pivot from
+        end (int): index of the last item we want to get pivot from
+        draw_data (function): function that allows for data drawing onto the
+            canvas
+        time_delay (float): an amount of time that the app will wait for
+            between the next sort
+
+    Returns:
+        int: index of the number by which the list will be split in quicksort
+    """
     i = start + 1
     pivot = data[start]
 
@@ -103,6 +130,7 @@ def partition(data, start, end, draw_data, time_delay):
             )
             sleep(time_delay)
             i += 1
+
     data[start], data[i - 1] = data[i - 1], data[start]
     draw_data(
         data,
@@ -112,34 +140,43 @@ def partition(data, start, end, draw_data, time_delay):
         ],
     )
     sleep(time_delay)
+
     return i - 1
 
 
 def quick_sort(data, start, end, draw_data, time_delay):
+    """Quicksort function with a modification that allows for drawing of the
+    sorted data onto the canvas
+
+    Color information:
+    - rectangles that are swapped are light green,
+    - to the left and to the right of the pivot in the partitioned list,
+      rectangles are purple,
+    - rectangle that represents the pivot is red,
+    -
+
+    Args:
+        data (list): list of random data to sort
+        start (int): index of the first item from which we want to sort
+        end (int): index of the last item we want to sort
+        draw_data (function): function that allows for data drawing onto the
+            canvas
+        time_delay (float): an amount of time that the app will wait for
+            between the next sort
+
+    Returns:
+        int: index of the number by which the list will be split in quicksort
+    """
     if start < end:
         pivot_position = partition(data, start, end, draw_data, time_delay)
         quick_sort(data, start, pivot_position - 1, draw_data, time_delay)
-        draw_data(
-            data,
-            [
-                col.PURPLE
-                if x >= start and x < pivot_position
-                else col.YELLOW
-                if x == pivot_position
-                else col.PURPLE
-                if x > pivot_position and x <= end
-                else col.BLUE
-                for x in range(len(data))
-            ],
-        )
-        sleep(time_delay)
         quick_sort(data, pivot_position + 1, end, draw_data, time_delay)
         draw_data(
             data,
             [
                 col.PURPLE
                 if x >= start and x < pivot_position
-                else col.YELLOW
+                else col.RED
                 if x == pivot_position
                 else col.PURPLE
                 if x > pivot_position and x <= end
@@ -148,13 +185,18 @@ def quick_sort(data, start, end, draw_data, time_delay):
             ],
         )
         sleep(time_delay)
-
-    draw_data(data, [col.BLUE for x in range(len(data))])
+    # draw_data(data, [col.BLUE for x in range(len(data))])
+    draw_data(data, list(map(lambda x: col.BLUE, data)))
 
 
 def shellsort(data, draw_data, time_delay):
     """Shellsort with a modification that allows
     drawing of the sorted data in realtime with a specified delay
+
+    Color information:
+    - rectangles that are swapped are light green,
+    - if rectangles are just checked they appear as yellow,
+    - when we write down the temp back into the data it appears as red.
 
     Args:
         data (list): list of random data to sort
@@ -179,15 +221,7 @@ def shellsort(data, draw_data, time_delay):
                     ],
                 )
                 sleep(time_delay)
-            else:
-                draw_data(
-                    data,
-                    [
-                        col.YELLOW if x == i or x == i + 1 else col.BLUE
-                        for x in range(len(data))
-                    ],
-                )
-                sleep(time_delay)
+
             data[j] = temp
             draw_data(
                 data,
@@ -198,14 +232,19 @@ def shellsort(data, draw_data, time_delay):
 
 
 def insert_sort(data, draw_data, time_delay):
-    """Funkcja sortująca przez wstawianie, która pozwala na rysowanie
-    sortowanych danych w czasie rzeczywistym z określonym opóźnieniem.
+    """Insert sort algorithm with a modification that allows drawing of the
+    sorted data in realtime with specified time delay
+
+    Color information:
+    - selected value appears as pink when first chosen,
+    - rectangles that are swapped are light green,
+    - when we plug selected rectangle back it appears as red.
 
     Args:
-        data (list): lista liczb całkowitych do posortowania
-        draw_data (function): funkcja rysująca na płótnie określone dane
-        time_delay (float): ilość czasu, ile aplikacja odczeka po każdym etapie
-            sortowania
+        data (list): list of random data to sort
+        draw_data (function): function that draws the specified data
+        time_delay (float): an amount of time that the app will wait for
+            between the next sort
     """
 
     for i in range(1, len(data)):

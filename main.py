@@ -84,7 +84,7 @@ def draw_data(data, colors):
     # normalizes the data by scaling every value to the max value
     normalizedData = [x / max(data) for x in data]
 
-    # this part goes over every every data point and creates a rectangle for
+    # this part goes over every data point and creates a rectangle for
     # each of them, size is calculated by scaling to both current width and
     # height of the window
     for i, height in enumerate(normalizedData):
@@ -134,7 +134,7 @@ def start_sorting():
         insert_sort(data, draw_data, time_delay)
 
 
-###################################
+##################################
 # objects displayed in the frame #
 ##################################
 
@@ -148,13 +148,14 @@ algorithm_list = [
 ]
 sorting_speeds = ["slow", "medium", "fast", "realtime"]
 
-# everything related to choosing choosing
+# everything related to choosing an algorithm
 algorithm_name = tk.StringVar()
 
 label_algo = tk.Label(
     main_frame, text="Algorithm: ", fg=col.WHITE, bg=col.BLACK
 )
 label_algo.grid(row=0, column=1, padx=10, pady=5)
+
 menu_algo = ttk.Combobox(
     main_frame, textvariable=algorithm_name, values=algorithm_list
 )
@@ -168,6 +169,7 @@ label_speed = tk.Label(
     main_frame, text="Sorting speed: ", fg=col.WHITE, bg=col.BLACK
 )
 label_speed.grid(row=1, column=1, padx=10, pady=5, sticky=tk.N)
+
 menu_speed = ttk.Combobox(
     main_frame, textvariable=algorithm_speed_name, values=sorting_speeds
 )
