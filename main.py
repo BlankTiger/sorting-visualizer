@@ -23,6 +23,7 @@ from sorting_algorithms import (
 
 app_window = tk.Tk()
 app_window.title("Sorting algorithm visualization")
+app_window.iconbitmap("logo.ico")
 app_window.geometry("800x600")
 app_window.config(bg=col.WHITE)
 app_window.resizable(1, 1)
