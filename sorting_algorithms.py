@@ -152,8 +152,7 @@ def quick_sort(data, start, end, draw_data, time_delay):
     - rectangles that are swapped are light green,
     - to the left and to the right of the pivot in the partitioned list,
       rectangles are purple,
-    - rectangle that represents the pivot is red,
-    -
+    - rectangle that represents the pivot is red.
 
     Args:
         data (list): list of random data to sort
