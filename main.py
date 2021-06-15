@@ -9,7 +9,13 @@ import tkinter as tk
 from tkinter import ttk
 import numpy as np
 import colors as col
-from sorting_algorithms import bubble_sort, unoptimized_bubble_sort
+from sorting_algorithms import (
+    bubble_sort,
+    insert_sort,
+    quick_sort,
+    shellsort,
+    unoptimized_bubble_sort,
+)
 
 ############################
 # main app window settings #
@@ -51,11 +57,11 @@ def generate_data():
 
     global data
     data = []
-    for i in range(50):
+    for _ in range(50):
         random_value = np.random.randint(0, 51)
         data.append(random_value)
 
-    draw_data(data, [col.DARK_BLUE for x in range(len(data))])
+    draw_data(data, [col.DARK_BLUE for _ in range(len(data))])
 
 
 def draw_data(data, colors):
@@ -73,8 +79,8 @@ def draw_data(data, colors):
     data_canvas.delete("all")
     x_width = data_canvas.winfo_width() / (len(data) + 1)
     canvas_height = data_canvas.winfo_height()
-    offset = 4
-    spacing = 2
+    offset = 6
+    spacing = 3
     # normalizes the data by scaling every value to the max value
     normalizedData = [x / max(data) for x in data]
 
@@ -118,20 +124,35 @@ def start_sorting():
     elif menu_algo.get() == "Unoptimized Bubble sort":
         unoptimized_bubble_sort(data, draw_data, time_delay)
 
+    elif menu_algo.get() == "Quicksort":
+        quick_sort(data, 0, len(data) - 1, draw_data, time_delay)
 
-#######################################
-# objects displayed in the app window #
-#######################################
+    elif menu_algo.get() == "Shellsort":
+        shellsort(data, draw_data, time_delay)
+
+    elif menu_algo.get() == "Insert sort":
+        insert_sort(data, draw_data, time_delay)
+
+
+###################################
+# objects displayed in the frame #
+##################################
 
 # data used to fill the objects created below
-algorithm_list = ["Bubble sort", "Unoptimized Bubble sort", "Quicksort"]
+algorithm_list = [
+    "Bubble sort",
+    "Unoptimized Bubble sort",
+    "Quicksort",
+    "Shellsort",
+    "Insert sort",
+]
 sorting_speeds = ["slow", "medium", "fast", "realtime"]
 
 # everything related to choosing choosing
 algorithm_name = tk.StringVar()
 
 label_algo = tk.Label(
-    main_frame, text="Algorithm: ", fg=col.BLACK, bg=col.WHITE
+    main_frame, text="Algorithm: ", fg=col.WHITE, bg=col.BLACK
 )
 label_algo.grid(row=0, column=1, padx=10, pady=5)
 menu_algo = ttk.Combobox(
@@ -144,7 +165,7 @@ menu_algo.current(0)
 algorithm_speed_name = tk.StringVar()
 
 label_speed = tk.Label(
-    main_frame, text="Sorting speed: ", fg=col.BLACK, bg=col.WHITE
+    main_frame, text="Sorting speed: ", fg=col.WHITE, bg=col.BLACK
 )
 label_speed.grid(row=1, column=1, padx=10, pady=5, sticky=tk.N)
 menu_speed = ttk.Combobox(
