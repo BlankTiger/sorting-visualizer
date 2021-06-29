@@ -124,7 +124,13 @@ def partition(data, start, end, draw_data, time_delay):
             draw_data(
                 data,
                 [
-                    col.LIGHT_GREEN if x == i or x == j else col.BLUE
+                    col.RED
+                    if x == start
+                    else col.LIGHT_GREEN
+                    if x == i + 1 or x == j
+                    else col.PURPLE
+                    if x > start and x <= end
+                    else col.BLUE
                     for x in range(len(data))
                 ],
             )
@@ -151,7 +157,7 @@ def quick_sort(data, start, end, draw_data, time_delay):
     Color information:
     - rectangles that are swapped are light green,
     - to the left and to the right of the pivot in the partitioned list,
-      rectangles are purple,
+      rectangles are yellow,
     - rectangle that represents the pivot is red.
 
     Args:
@@ -168,22 +174,36 @@ def quick_sort(data, start, end, draw_data, time_delay):
     """
     if start < end:
         pivot_position = partition(data, start, end, draw_data, time_delay)
-        quick_sort(data, start, pivot_position - 1, draw_data, time_delay)
-        quick_sort(data, pivot_position + 1, end, draw_data, time_delay)
         draw_data(
             data,
             [
-                col.PURPLE
+                col.YELLOW
                 if x >= start and x < pivot_position
                 else col.RED
                 if x == pivot_position
-                else col.PURPLE
+                else col.YELLOW
                 if x > pivot_position and x <= end
                 else col.BLUE
                 for x in range(len(data))
             ],
         )
         sleep(time_delay)
+        quick_sort(data, start, pivot_position - 1, draw_data, time_delay)
+        draw_data(
+            data,
+            [
+                col.YELLOW
+                if x >= pivot_position + 1 and x < end
+                else col.RED
+                if x == pivot_position
+                else col.YELLOW
+                if x < pivot_position
+                else col.BLUE
+                for x in range(len(data))
+            ],
+        )
+        sleep(time_delay)
+        quick_sort(data, pivot_position + 1, end, draw_data, time_delay)
     # draw_data(data, [col.BLUE for x in range(len(data))])
     draw_data(data, list(map(lambda x: col.BLUE, data)))
 
@@ -210,8 +230,6 @@ def shellsort(data, draw_data, time_delay):
             temp = data[i]
             j = i
             while br <= j and data[j - br] > temp:
-                data[j] = data[j - br]
-                j -= br
                 draw_data(
                     data,
                     [
@@ -220,13 +238,15 @@ def shellsort(data, draw_data, time_delay):
                     ],
                 )
                 sleep(time_delay)
+                data[j] = data[j - br]
+                j -= br
 
-            data[j] = temp
             draw_data(
                 data,
                 [col.RED if x == j else col.BLUE for x in range(len(data))],
             )
             sleep(time_delay)
+            data[j] = temp
         br //= 2
 
 
@@ -275,9 +295,7 @@ def insert_sort(data, draw_data, time_delay):
         draw_data(
             data,
             [
-                col.RED
-                if x == data.index(selected) or x == j + 1
-                else col.BLUE
+                col.RED if x == data.index(selected) else col.BLUE
                 for x in range(len(data))
             ],
         )

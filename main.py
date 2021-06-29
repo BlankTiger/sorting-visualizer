@@ -90,7 +90,7 @@ def draw_data(data, colors):
     # height of the window
     for i, height in enumerate(normalizedData):
         x0 = i * x_width + offset + spacing
-        y0 = canvas_height * (1 - 0.95 * height)
+        y0 = canvas_height * (1 - 0.98 * height)
         x1 = (i + 1) * x_width + offset
         y1 = canvas_height
         data_canvas.create_rectangle(x0, y0, x1, y1, fill=colors[i])
